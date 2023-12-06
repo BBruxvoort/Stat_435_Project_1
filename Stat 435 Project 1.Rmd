@@ -1,0 +1,66 @@
+---
+title: "Stat 435 Project"
+author: "Brian Bruxvoort"
+date: '2023-10-26'
+output:
+  word_document: default
+  pdf_document: default
+---
+
+
+# Part 1
+Perform a Wald test for a βjr for some r = 1, · · · , p. Why may this test not be of interest?
+```{r}
+wheat <- read.csv("wheat.csv")
+```
+
+```{r}
+library(package = nnet)
+mod.fit.nom.density <- multinom(formula = type ~ class + density + hardness + size + weight + moisture, data = wheat)
+summary(mod.fit.nom.density)
+```
+
+We might not be interested in the Wald results because they are not as accurate as some of the other tests.
+
+# Part 2
+How can we perform a LRT for an explanatory variable?
+```{r, message=FALSE, warning=FALSE}
+library(package = car)
+Anova(mod = mod.fit.nom.density, test = "LR")
+```
+
+# Part 3
+How can we estimate in R the probability of healthy for the first observation?
+```{r}
+new_data <- wheat[1,]
+mod.predict <- predict(mod.fit.nom.density, newdata = new_data, type = "probs")
+mod.predict
+```
+
+# Part 4
+How could we determine a classification for the kernels?
+```{r}
+predict(mod.fit.nom.density, type="class")
+```
+
+# Part 5
+What does head(mod.fit$fitted.values) do?
+```{r}
+head(mod.fit.nom.density$fitted.values)
+```
+
+# Part 6
+How could you estimate the covariance matrix and print it in R?
+```{r}
+vcov(mod.fit.nom.density)
+```
+
+# Part 7
+How could you include some type of transformation of an explanatory variable(s) in the model?
+```{r}
+mod.fit.nom.density2 <- multinom(formula = type ~ class + density + hardness + size + weight + moisture + weight:size, data = wheat)
+summary(mod.fit.nom.density2)
+```
+
+
+
